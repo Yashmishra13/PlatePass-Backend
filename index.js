@@ -4,20 +4,23 @@ const admin = require('firebase-admin');
 const cors = require('cors');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
-const serviceAccount = require('./firebase.json'); // Your Firebase service key
+const serviceAccount = require('./firebase-key.json');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
-
 const db = admin.firestore();
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({
+  strict: false,
+  inflate: true,
+  limit: '1kb',
+  type: ['application/json', 'text/plain']
+}));
 
-// Routes
 const checkPlate = require('./routes/checkPlate')(db);
 const openDoor = require('./routes/openDoor')(db);
 

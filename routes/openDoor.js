@@ -1,11 +1,8 @@
 module.exports = (db) => async (req, res) => {
-  const user = req.body.user || 'ManualTrigger';
-  const reason = req.body.reason || 'Manual override';
+  const user = req.body?.user || 'ManualTrigger';
+  const reason = req.body?.reason || 'Manual override';
 
   try {
-    const triggerRelay = require('../utils/TriggerRelay');
-    await triggerRelay();
-
     await db.collection('logs').add({
       user,
       plate: null,
@@ -14,6 +11,9 @@ module.exports = (db) => async (req, res) => {
       source: 'app',
       timestamp: new Date()
     });
+
+    const triggerRelay = require('../utils/TriggerRelay');
+    await triggerRelay();
 
     res.status(200).json({ success: true, message: 'Gate manually opened.' });
   } catch (err) {
