@@ -1,0 +1,16 @@
+require('dotenv').config();
+const axios = require('axios');
+
+const shellyUrl = process.env.SHELLY_URL;
+
+const triggerRelay = async () => {
+  try {
+    console.log('Triggering Shelly Relay...');
+    await axios.post(shellyUrl);
+    console.log('✅ Relay successfully triggered');
+  } catch (err) {
+    console.error('❌ Error triggering relay:', err.message);
+  }
+};
+
+module.exports = triggerRelay;
