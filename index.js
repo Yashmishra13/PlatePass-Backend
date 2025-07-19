@@ -27,6 +27,6 @@ const openDoor = require('./routes/openDoor')(db);
 app.post('/checkPlate', checkPlate);
 app.post('/openDoor', openDoor);
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ Server running on port ${PORT}`);
 });
