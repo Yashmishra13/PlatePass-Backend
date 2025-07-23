@@ -1,3 +1,4 @@
+// index.js
 require('dotenv').config();
 const express = require('express');
 const admin = require('firebase-admin');
@@ -9,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 const serviceAccount = require('./firebase-key.json');
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert(serviceAccount),
 });
 const db = admin.firestore();
 
@@ -18,14 +19,19 @@ app.use(express.json({
   strict: false,
   inflate: true,
   limit: '1kb',
-  type: ['application/json', 'text/plain']
+  type: ['application/json', 'text/plain'],
 }));
 
+// Routes
 const checkPlate = require('./routes/checkPlate')(db);
 const openDoor = require('./routes/openDoor')(db);
+const pingRoute = require('./routes/ping');
+const vehicleRoutes = require('./routes/vehicles')(db); // ✅ NEW
 
 app.post('/checkPlate', checkPlate);
 app.post('/openDoor', openDoor);
+app.use('/ping', pingRoute);
+app.use('/vehicles', vehicleRoutes); // ✅ NEW
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ Server running on port ${PORT}`);
